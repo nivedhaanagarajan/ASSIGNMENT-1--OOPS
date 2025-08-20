@@ -1,0 +1,68 @@
+Throw and catch exceptions in `Course` methods to handle cases such as duplicate
+registration or deregistering a non-enrolled student
+
+package Assignment1;
+
+import java.util.HashSet;
+
+class Course {
+    private String courseName;
+    private HashSet<String> students;
+
+    public Course(String courseName) {
+        this.courseName = courseName;
+        this.students = new HashSet<>();
+    }
+
+    public void register(String student) throws Exception {
+        if (students.contains(student)) {
+            throw new Exception("Student " + student + " is already registered!");
+        }
+        students.add(student);
+        System.out.println(student + " registered successfully.");
+    }
+
+    public void deregister(String student) throws Exception {
+        if (!students.contains(student)) {
+            throw new Exception("Student " + student + " is not enrolled, so cannot be removed!");
+        }
+        students.remove(student);
+        System.out.println(student + " deregistered successfully.");
+    }
+}
+
+public class hello {   // file name should be hello.java
+    public static void main(String[] args) {
+        Course course = new Course("Java OOP");
+
+        try {
+            course.register("Nivedhaa");
+            course.register("Nagarajan");
+            course.register("Nivedhaa"); // duplicate
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
+        try {
+            course.deregister("Santhosh"); // not enrolled
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
+        try {
+            course.deregister("Nagarajan"); // works
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+}
+
+
+
+
+
+OUTPUT: Nivedhaa registered successfully.
+Nagarajan registered successfully.
+Error: Student Nivedhaa is already registered!
+Error: Student Santhosh is not enrolled, so cannot be removed!
+Nagarajan deregistered successfully.
