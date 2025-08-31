@@ -1,0 +1,64 @@
+
+
+
+package assignment2;
+import java.io.*;
+import java.lang.reflect.Field;
+
+class Student {
+    private String name = "Default Name";  // private field
+    private int age = 18;                  // another private field
+
+    public String getName() { return name; }
+    public int getAge() { return age; }
+}
+
+public class PrivateFieldIntrospector {
+    public static void main(String[] args) {
+        Student student = new Student();
+
+        // Using ByteArrayOutputStream & PrintStream to capture output (stream usage)
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+             PrintStream ps = new PrintStream(baos)) {
+
+            // Print initial values
+            ps.println("Before modification:");
+            ps.println("Name: " + student.getName());
+            ps.println("Age : " + student.getAge());
+
+            // Accessing private fields reflectively
+            try {
+                // Access private "name" field
+                Field nameField = Student.class.getDeclaredField("name");
+                nameField.setAccessible(true);  // bypass private access
+                nameField.set(student, "Nivedhaa Nagarajan"); // modify field
+
+                // Access private "age" field
+                Field ageField = Student.class.getDeclaredField("age");
+                ageField.setAccessible(true);
+                ageField.set(student, 25);
+
+                // Print modified values
+                ps.println("\nAfter modification:");
+                ps.println("Name: " + student.getName());
+                ps.println("Age : " + student.getAge());
+
+            } catch (NoSuchFieldException e) {
+                ps.println("Error: Field not found - " + e.getMessage());
+            } catch (IllegalAccessException e) {
+                ps.println("Error: Cannot access field - " + e.getMessage());
+            }
+
+            // Write output stream to a file (FileOutputStream)
+            try (FileOutputStream fos = new FileOutputStream("output.txt")) {
+                baos.writeTo(fos);
+            }
+
+            // Also print to console
+            System.out.println(baos.toString());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
